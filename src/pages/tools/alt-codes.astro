@@ -1,0 +1,163 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SYMBOLS } from '../../data/symbols.js';
+
+// Only symbols that have a reliable Windows Alt code, sorted by the code.
+const codes = SYMBOLS
+  .filter((s) => s.altCode)
+  .sort((a, b) => Number(a.altCode) - Number(b.altCode));
+---
+
+<Base
+  title="Alt Codes"
+  description="A searchable list of Windows Alt codes for special characters — euro, degree, copyright, accented letters and more. See the exact numbers to hold Alt and type on the numeric keypad."
+>
+  <section class="wrap" style="padding-top: 52px;">
+    <p class="eyebrow">Alt code reference</p>
+    <h1 style="font-size: clamp(30px, 4.6vw, 44px); margin-top: 14px;">
+      Windows Alt codes
+    </h1>
+    <p class="lead" style="max-width: 580px; margin-top: 16px;">
+      Hold <kbd>Alt</kbd>, type the number on your numeric keypad, then release.
+      Search the table below — or just click <strong>Copy</strong> if you’d rather not type.
+    </p>
+
+    <div style="max-width: 480px; margin-top: 26px;">
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color: var(--muted-2); flex: none;">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+          <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <input type="search" id="altSearch" placeholder="Search “euro”, “degree”, “0233”…" autocomplete="off" aria-label="Search alt codes" />
+      </label>
+    </div>
+
+    <div class="codes-wrap" style="margin-top: 22px;">
+      <table class="codes">
+        <thead>
+          <tr>
+            <th scope="col" class="c-sym">Symbol</th>
+            <th scope="col">Name</th>
+            <th scope="col" class="c-cat">Category</th>
+            <th scope="col">Alt code</th>
+            <th scope="col"><span class="sr">Copy</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {codes.map((s) => (
+            <tr data-filter={`${s.char} ${s.name} ${s.category} ${s.altCode} ${s.keywords}`.toLowerCase()}>
+              <td class="c-sym"><span class="sym">{s.char}</span></td>
+              <td>{s.name}</td>
+              <td class="c-cat"><span class="cat-tag">{s.category}</span></td>
+              <td><span class="code">Alt + {s.altCode}</span></td>
+              <td class="c-copy"><button class="copy-btn small" type="button" data-char={s.char}>Copy</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="empty" id="altEmpty" style="display:none;">No codes match that search.</p>
+    </div>
+  </section>
+
+  <article class="wrap article" style="padding-top: 8px; margin-top: 64px;">
+    <div class="body">
+      <h2>How to type an Alt code</h2>
+      <p>On a Windows keyboard with a separate numeric keypad on the right:</p>
+      <ol>
+        <li>Make sure <kbd>Num Lock</kbd> is on.</li>
+        <li>Press and <em>hold</em> the <kbd>Alt</kbd> key.</li>
+        <li>Type the number using the <strong>numeric keypad</strong> (not the row of numbers above the letters).</li>
+        <li>Release <kbd>Alt</kbd> — the character appears.</li>
+      </ol>
+      <p>
+        For example, <kbd>Alt</kbd> + <kbd>0233</kbd> gives <strong>é</strong>, and
+        <kbd>Alt</kbd> + <kbd>0128</kbd> gives <strong>€</strong>. Keep the leading zero — the
+        four-digit codes here use the modern Windows character set, which is the one that matches
+        what you see on screen.
+      </p>
+
+      <h2>Laptop with no number pad?</h2>
+      <p>Most laptops still have a hidden keypad or another way in:</p>
+      <ul>
+        <li>Look for small numbers printed on the <kbd>M</kbd> <kbd>J</kbd> <kbd>K</kbd> <kbd>L</kbd> keys. Hold <kbd>Fn</kbd> (and sometimes <kbd>Num Lock</kbd>) and use those.</li>
+        <li>Or open the on-screen keyboard (search “On-Screen Keyboard” in Windows), enable its numpad, and click the digits while holding <kbd>Alt</kbd>.</li>
+        <li>Or skip the codes entirely and use the <strong>Copy</strong> buttons above — they work on every device.</li>
+      </ul>
+
+      <h2>Do Alt codes work on a Mac?</h2>
+      <p>
+        No — that numeric-keypad trick is Windows-only. On a Mac you hold <kbd>Option</kbd> with a
+        letter instead (for example <kbd>Option</kbd> + <kbd>E</kbd> then a vowel adds an accent).
+        The simplest cross-platform option is to copy the character here, or use the
+        <a href="/tools/accent-keyboard/">accent keyboard</a> for accented letters.
+      </p>
+
+      <h2>Looking for one specific character?</h2>
+      <p>
+        Search the table above by name, keyword, or even the code itself. For step-by-step help
+        with popular symbols, see the <a href="/guides/">how-to guides</a>, or browse everything on
+        the <a href="/symbols/">full symbols page</a>.
+      </p>
+    </div>
+
+    <p style="margin-top: 44px; font-family: var(--font-display);">
+      <a href="/tools/" style="color: var(--teal); text-decoration: none; font-weight: 500;">← All tools</a>
+    </p>
+  </article>
+</Base>
+
+<style>
+  kbd {
+    font-family: var(--font-mono); font-size: 0.82em; background: var(--surface-2);
+    color: var(--teal); border: 1px solid var(--line-2); border-bottom-width: 2px;
+    border-radius: 6px; padding: 2px 7px; white-space: nowrap;
+  }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  .codes-wrap { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  table.codes { width: 100%; border-collapse: collapse; font-size: 15px; }
+  table.codes th, table.codes td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  table.codes thead th {
+    font-family: var(--font-mono); font-weight: 500; font-size: 11px; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--muted-2); background: var(--bg-2);
+  }
+  table.codes tbody tr:last-child td { border-bottom: 0; }
+  table.codes tbody tr:hover td { background: var(--surface); }
+  .codes .c-sym { width: 64px; }
+  .codes .sym { font-size: 26px; line-height: 1; }
+  .codes .cat-tag { font-family: var(--font-mono); font-size: 12px; color: var(--violet); }
+  .codes .code { font-family: var(--font-mono); font-size: 13px; color: var(--teal); white-space: nowrap; }
+  .codes .c-copy { text-align: right; width: 92px; }
+
+  .copy-btn.small {
+    border: 1px solid var(--line-2); background: var(--surface); color: var(--text);
+    font-family: var(--font-display); font-weight: 500; font-size: 13px;
+    padding: 7px 14px; border-radius: 9px; cursor: pointer; transition: all 0.14s;
+  }
+  .copy-btn.small:hover { border-color: var(--teal); color: var(--teal); background: var(--surface-hover); }
+  .copy-btn.small.done { background: var(--teal); border-color: var(--teal); color: #06241f; }
+
+  @media (max-width: 640px) {
+    .codes .c-cat { display: none; }
+    table.codes th, table.codes td { padding: 11px 12px; }
+  }
+</style>
+
+<script>
+  const input = document.getElementById('altSearch');
+  const rows = Array.from(document.querySelectorAll('table.codes tbody tr'));
+  const empty = document.getElementById('altEmpty');
+  if (input) {
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      rows.forEach((r) => {
+        const hay = r.getAttribute('data-filter') || '';
+        const vis = !q || hay.includes(q);
+        r.style.display = vis ? '' : 'none';
+        if (vis) shown++;
+      });
+      if (empty) empty.style.display = shown === 0 ? '' : 'none';
+    });
+  }
+</script>

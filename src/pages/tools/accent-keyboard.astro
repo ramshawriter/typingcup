@@ -1,0 +1,189 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SYMBOLS } from '../../data/symbols.js';
+
+const accents = SYMBOLS.filter((s) => s.category === 'Accents');
+---
+
+<Base
+  title="Accent Keyboard"
+  description="An on-screen accent keyboard. Type normally and click accented letters — á, é, ñ, ü, ç and more — to drop them into your text, then copy. No special keyboard or language pack needed."
+>
+  <section class="wrap" style="padding-top: 52px;">
+    <p class="eyebrow">Accent keyboard</p>
+    <h1 style="font-size: clamp(30px, 4.6vw, 44px); margin-top: 14px;">
+      On-screen accent keyboard
+    </h1>
+    <p class="lead" style="max-width: 580px; margin-top: 16px;">
+      Type in the box like normal, and click an accented letter to insert it at your cursor.
+      When you’re done, hit <strong>Copy</strong> — great for names, café, jalapeño, résumé and more.
+    </p>
+
+    <div class="acc-tool" style="margin-top: 28px;">
+      <textarea id="accOut" class="acc-out" rows="3" placeholder="Start typing here… then click accents below to insert them."></textarea>
+      <div class="acc-actions">
+        <button id="accCopy" class="copy-btn" type="button">Copy text</button>
+        <button id="accClear" class="acc-clear" type="button">Clear</button>
+        <span id="accStatus" class="acc-status" aria-live="polite"></span>
+      </div>
+
+      <div class="acc-keys" role="group" aria-label="Accented letters">
+        {accents.map((s) => (
+          <button class="akey" type="button" data-char={s.char} title={s.name} aria-label={`Insert ${s.name}`}>
+            <span class="k-ch">{s.char}</span>
+            {s.altCode && <span class="k-code">{s.altCode}</span>}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <article class="wrap article" style="padding-top: 8px; margin-top: 64px;">
+    <div class="body">
+      <h2>How to type accented letters without this tool</h2>
+      <p>Once you know the shortcut for the accents you use most, you can skip the on-screen keys:</p>
+
+      <h3>On a Mac</h3>
+      <p>
+        Hold the letter key for a second and a little accent menu pops up — press the number for the
+        one you want. Or use <kbd>Option</kbd> combinations: <kbd>Option</kbd> + <kbd>E</kbd> then
+        <kbd>e</kbd> gives <strong>é</strong>; <kbd>Option</kbd> + <kbd>N</kbd> then <kbd>n</kbd>
+        gives <strong>ñ</strong>; <kbd>Option</kbd> + <kbd>U</kbd> then <kbd>u</kbd> gives
+        <strong>ü</strong>.
+      </p>
+
+      <h3>On Windows</h3>
+      <p>
+        Press <kbd>Win</kbd> + <kbd>.</kbd> (period) to open the emoji and symbol panel, then choose
+        the <em>Ω</em> tab for accented letters. You can also hold <kbd>Alt</kbd> and type the
+        character’s number on the numeric keypad — the full list is on our
+        <a href="/tools/alt-codes/">Alt codes</a> page (for example <kbd>Alt</kbd> + <kbd>0233</kbd>
+        for é).
+      </p>
+
+      <h3>On a phone or tablet</h3>
+      <p>
+        Press and hold the base letter on the on-screen keyboard — <strong>a</strong>,
+        <strong>e</strong>, <strong>n</strong>, <strong>c</strong> and so on — and a row of accented
+        versions appears. Slide to the one you need and let go.
+      </p>
+
+      <h2>Why use the on-screen keyboard instead?</h2>
+      <p>
+        The shortcuts above are great when you remember them and you’re on your own device. This
+        tool is for the in-between moments: a borrowed computer, a keyboard set to another language,
+        or an accent you only need once. Build the word here, copy it, and paste it wherever you’re
+        writing.
+      </p>
+      <p>
+        Need a single character on its own? The <a href="/tools/copy-paste-symbols/">copy &amp; paste
+        pad</a> copies any symbol in one click, and the <a href="/guides/">guides</a> walk through
+        specific letters in more detail.
+      </p>
+    </div>
+
+    <p style="margin-top: 44px; font-family: var(--font-display);">
+      <a href="/tools/" style="color: var(--teal); text-decoration: none; font-weight: 500;">← All tools</a>
+    </p>
+  </article>
+</Base>
+
+<style>
+  kbd {
+    font-family: var(--font-mono); font-size: 0.82em; background: var(--surface-2);
+    color: var(--teal); border: 1px solid var(--line-2); border-bottom-width: 2px;
+    border-radius: 6px; padding: 2px 7px; white-space: nowrap;
+  }
+  .acc-out {
+    width: 100%; min-height: 96px; resize: vertical;
+    border: 1px solid var(--line-2); background: var(--surface); color: var(--text);
+    border-radius: 14px; padding: 16px 18px; font-family: var(--font-display);
+    font-size: 18px; line-height: 1.6; outline: 0; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .acc-out:focus { border-color: var(--teal); box-shadow: 0 0 0 4px var(--teal-wash); }
+  .acc-out::placeholder { color: var(--muted-2); }
+
+  .acc-actions { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+  .acc-clear {
+    border: 1px solid var(--line-2); background: var(--surface); color: var(--muted);
+    font-family: var(--font-display); font-weight: 500; font-size: 15px;
+    padding: 13px 18px; border-radius: 11px; cursor: pointer; transition: all 0.14s;
+  }
+  .acc-clear:hover { color: var(--text); border-color: var(--line-2); background: var(--surface-hover); }
+  .acc-status { font-family: var(--font-mono); font-size: 13px; color: var(--teal); }
+
+  .acc-keys {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+    gap: 10px; margin-top: 26px;
+  }
+  .akey {
+    position: relative; aspect-ratio: 1 / 1; border: 1px solid var(--line);
+    background: var(--surface); color: var(--text); border-radius: var(--radius);
+    cursor: pointer; display: grid; place-items: center; font-family: inherit;
+    transition: border-color 0.15s, transform 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+  .akey:hover { border-color: var(--teal); transform: translateY(-2px); background: var(--surface-2); box-shadow: var(--glow); }
+  .akey:active { transform: translateY(0) scale(0.96); }
+  .akey:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .akey.flash { background: var(--teal); border-color: var(--teal); }
+  .akey.flash .k-ch { color: #06241f; }
+  .akey .k-ch { font-size: 28px; line-height: 1; }
+  .akey .k-code {
+    position: absolute; bottom: 5px; right: 7px; font-family: var(--font-mono);
+    font-size: 9px; color: var(--muted-2);
+  }
+  @media (max-width: 640px) {
+    .acc-keys { grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 8px; }
+    .akey .k-ch { font-size: 24px; }
+  }
+</style>
+
+<script>
+  const out = document.getElementById('accOut');
+  const keys = Array.from(document.querySelectorAll('.akey'));
+  const copyBtn = document.getElementById('accCopy');
+  const clearBtn = document.getElementById('accClear');
+  const status = document.getElementById('accStatus');
+
+  function insertAtCursor(el, text) {
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? el.value.length;
+    el.value = el.value.slice(0, start) + text + el.value.slice(end);
+    const pos = start + text.length;
+    el.selectionStart = el.selectionEnd = pos;
+    el.focus();
+  }
+
+  keys.forEach((k) => {
+    k.addEventListener('click', () => {
+      const ch = k.getAttribute('data-char');
+      if (!ch || !out) return;
+      insertAtCursor(out, ch);
+      k.classList.add('flash');
+      setTimeout(() => k.classList.remove('flash'), 220);
+      if (status) status.textContent = '';
+    });
+  });
+
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand('copy'); } catch {}
+      document.body.removeChild(ta); return ok;
+    }
+  }
+
+  if (copyBtn && out) {
+    copyBtn.addEventListener('click', async () => {
+      if (!out.value) { if (status) status.textContent = 'Nothing to copy yet'; return; }
+      const ok = await copyText(out.value);
+      if (status) status.textContent = ok ? 'Copied to clipboard ✓' : 'Press Ctrl/Cmd + C to copy';
+    });
+  }
+  if (clearBtn && out) {
+    clearBtn.addEventListener('click', () => { out.value = ''; out.focus(); if (status) status.textContent = ''; });
+  }
+</script>

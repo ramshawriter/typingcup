@@ -16,6 +16,7 @@ export const SITE = {
 
 export const NAV = [
   { label: 'Symbols', href: '/symbols/' },
+  { label: 'Tools', href: '/tools/' },
   { label: 'Guides', href: '/guides/' },
   { label: 'Accents', href: '/symbols/?cat=Accents' },
 ];

@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const tools = [
+  {
+    symbol: '⌘',
+    title: 'Copy & Paste Symbols',
+    sub: 'Tap-to-copy character pad',
+    desc: 'Search 150+ special characters and copy any one with a single click — no codes to remember.',
+    href: '/tools/copy-paste-symbols/',
+  },
+  {
+    symbol: '⌥',
+    title: 'Alt Codes',
+    sub: 'Windows numeric codes',
+    desc: 'A searchable reference of Windows Alt codes, with the exact keys to press on a numeric keypad.',
+    href: '/tools/alt-codes/',
+  },
+  {
+    symbol: 'é',
+    title: 'Accent Keyboard',
+    sub: 'On-screen accented letters',
+    desc: 'Click accented letters to build a word, then copy it — handy when your keyboard has no accent keys.',
+    href: '/tools/accent-keyboard/',
+  },
+];
+---
+
+<Base
+  title="Tools"
+  description="Free typing tools: a copy-and-paste symbol pad, a Windows Alt-code reference, and an on-screen accent keyboard. No sign-up, no codes to memorise."
+>
+  <section class="wrap" style="padding-top: 56px;">
+    <p class="eyebrow">Free tools</p>
+    <h1 style="font-size: clamp(30px, 4.8vw, 46px); margin-top: 14px; max-width: 640px;">
+      Tools for typing the characters your keyboard hides.
+    </h1>
+    <p class="lead" style="max-width: 560px; margin-top: 18px;">
+      Three small, fast utilities for copying symbols, looking up Alt codes, and typing
+      accented letters. Everything runs in your browser — nothing to install.
+    </p>
+
+    <div class="guide-list" style="margin-top: 40px;">
+      {tools.map((t) => (
+        <a class="guide-card" href={t.href}>
+          <span class="gch">{t.symbol}</span>
+          <span>
+            <span class="gtitle" style="display:block">{t.title}</span>
+            <span class="gsub" style="display:block; margin-top:4px">{t.sub}</span>
+            <span style="display:block; color: var(--muted); font-size: 14px; margin-top: 8px; font-family: var(--font-display); line-height: 1.5;">{t.desc}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

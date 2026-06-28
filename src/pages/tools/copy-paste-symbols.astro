@@ -1,0 +1,112 @@
+---
+import Base from '../../layouts/Base.astro';
+import Glyph from '../../components/Glyph.astro';
+import { SYMBOLS, CATEGORIES } from '../../data/symbols.js';
+
+const counts = Object.fromEntries(
+  CATEGORIES.map((c) => [c, SYMBOLS.filter((s) => s.category === c).length])
+);
+---
+
+<Base
+  title="Copy and Paste Symbols"
+  description="Click any symbol to copy it instantly — arrows, currency, math, stars, hearts, accents and more. A fast copy-and-paste character pad, plus how to paste symbols on Windows, Mac, iPhone and Android."
+>
+  <section class="wrap" style="padding-top: 52px;">
+    <p class="eyebrow">Copy &amp; paste tool</p>
+    <h1 style="font-size: clamp(30px, 4.6vw, 44px); margin-top: 14px;">
+      Copy and paste symbols
+    </h1>
+    <p class="lead" style="max-width: 560px; margin-top: 16px;">
+      Click a tile to copy the character to your clipboard, then paste it anywhere with
+      <kbd class="kbd-inline">Ctrl/Cmd + V</kbd>. Search by name, keyword, or category.
+    </p>
+
+    <div style="max-width: 560px; margin-top: 26px;">
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color: var(--muted-2); flex: none;">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+          <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <input type="search" placeholder="Search “arrow”, “heart”, “euro”…" data-search autocomplete="off" aria-label="Search symbols" />
+        <span class="kbd-hint">/</span>
+      </label>
+    </div>
+
+    <div class="cat-bar" style="margin-top: 18px;">
+      <button class="pill is-active" type="button" data-cat-pill="All">All</button>
+      {CATEGORIES.map((cat) => (
+        <button class="pill" type="button" data-cat-pill={cat}>
+          {cat}<span class="count">{counts[cat]}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="recent" data-recent>
+      <div class="label">Recently copied</div>
+      <div class="row" data-recent-row></div>
+    </div>
+
+    <div class="glyph-grid" data-grid style="margin-top: 22px;">
+      {SYMBOLS.map((sym) => <Glyph sym={sym} />)}
+    </div>
+    <p class="empty" data-empty style="display:none;">
+      No symbols match that search. Try a simpler word.
+    </p>
+  </section>
+
+  <article class="wrap article" style="padding-top: 8px; margin-top: 64px;">
+    <div class="body">
+      <h2>How to copy and paste symbols</h2>
+      <p>
+        Every tile above puts the character straight onto your clipboard, so the only thing
+        you do is paste. The keyboard shortcut is the same almost everywhere:
+      </p>
+      <ul>
+        <li><strong>Windows / Linux:</strong> <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
+        <li><strong>Mac:</strong> <kbd>Cmd</kbd> + <kbd>V</kbd></li>
+        <li><strong>iPhone / iPad &amp; Android:</strong> tap and hold where you want the symbol, then choose <kbd>Paste</kbd></li>
+      </ul>
+
+      <h2>Will the symbol look the same after I paste it?</h2>
+      <p>
+        These are real Unicode characters, not images, so they keep working when you paste them
+        into documents, chat apps, social bios, spreadsheets and code. The exact shape can shift a
+        little depending on the font — a star in a serif document looks slightly different from the
+        same star in a phone app — but it is the same character underneath. Emoji-style symbols
+        (like coloured hearts) render in colour on phones and often in black-and-white on older
+        desktop apps.
+      </p>
+
+      <h2>If a symbol turns into a box or question mark</h2>
+      <p>
+        A □ or ? after pasting means the place you pasted into is using a font that doesn’t include
+        that character. It is a display problem, not a copy problem — the character is still there.
+        Try a more complete font (Arial, Segoe UI, Noto, or your system default), or pick a more
+        common symbol. Very new emoji can show as boxes on out-of-date devices.
+      </p>
+
+      <h2>Faster ways to reuse symbols</h2>
+      <p>
+        If you paste the same character all day, you don’t have to keep coming back here:
+      </p>
+      <ul>
+        <li><strong>Type it directly</strong> with a keyboard shortcut — see our <a href="/tools/alt-codes/">Alt codes</a> reference for Windows, or the <a href="/tools/accent-keyboard/">accent keyboard</a> for accented letters.</li>
+        <li><strong>Make a text shortcut</strong> in your phone’s keyboard settings (for example, type <code>(c)</code> and have it expand to ©).</li>
+        <li><strong>Browse by category</strong> on the full <a href="/symbols/">symbols page</a>, or read the <a href="/guides/">how-to guides</a> to learn the shortcut for a specific character.</li>
+      </ul>
+    </div>
+
+    <p style="margin-top: 44px; font-family: var(--font-display);">
+      <a href="/tools/" style="color: var(--accent); text-decoration: none; font-weight: 500;">← All tools</a>
+    </p>
+  </article>
+</Base>
+
+<style>
+  .kbd-inline, kbd {
+    font-family: var(--font-mono); font-size: 0.82em; background: var(--surface-2);
+    color: var(--teal); border: 1px solid var(--line-2); border-bottom-width: 2px;
+    border-radius: 6px; padding: 2px 7px; white-space: nowrap;
+  }
+</style>
