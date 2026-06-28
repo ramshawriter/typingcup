@@ -1,5 +1,3 @@
-import { SITE } from '../consts.js';
-
 export async function GET() {
   // Discourage all search engines from indexing the site.
   const body = `User-agent: *
