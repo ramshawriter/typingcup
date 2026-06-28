@@ -1,0 +1,218 @@
+---
+import '../styles/global.css';
+import { SITE, NAV } from '../consts.js';
+
+const {
+  title,
+  description = SITE.description,
+  ogType = 'website',
+} = Astro.props;
+
+const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0e1016" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e1016'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%2334e3c4' font-family='monospace'%3E%26%23167;%3C/text%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="brand" href="/">
+          <span class="mark">§</span>
+          {SITE.name}
+        </a>
+        <nav class="nav" aria-label="Primary">
+          {NAV.map((item) => <a href={item.href} class={item.label === 'Accents' ? 'hide-sm' : ''}>{item.label}</a>)}
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap cols">
+        <div>
+          <strong>{SITE.name}</strong> · {SITE.tagline}
+        </div>
+        <nav class="nav" aria-label="Footer">
+          <a href="/">Home</a>
+          <a href="/symbols/">All symbols</a>
+          <a href="/guides/">Guides</a>
+        </nav>
+        <div>© {year} {SITE.author}</div>
+      </div>
+    </footer>
+
+    <script>
+      // ---------- clipboard ----------
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          let ok = false;
+          try { ok = document.execCommand('copy'); } catch {}
+          document.body.removeChild(ta);
+          return ok;
+        }
+      }
+
+      // ---------- recently copied (persists across visits) ----------
+      const RECENT_KEY = 'tc-recent';
+      function getRecent() {
+        try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch { return []; }
+      }
+      function pushRecent(ch) {
+        try {
+          let list = getRecent().filter((c) => c !== ch);
+          list.unshift(ch);
+          list = list.slice(0, 12);
+          localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+          renderRecent();
+        } catch {}
+      }
+      function renderRecent() {
+        const box = document.querySelector('[data-recent]');
+        if (!box) return;
+        const list = getRecent();
+        const row = box.querySelector('[data-recent-row]');
+        if (!list.length) { box.classList.remove('show'); return; }
+        box.classList.add('show');
+        row.innerHTML = '';
+        list.forEach((ch) => {
+          const b = document.createElement('button');
+          b.className = 'chip';
+          b.type = 'button';
+          b.textContent = ch;
+          b.title = 'Copy ' + ch;
+          b.addEventListener('click', async () => {
+            await copyText(ch);
+            b.textContent = '✓';
+            setTimeout(() => (b.textContent = ch), 700);
+          });
+          row.appendChild(b);
+        });
+      }
+
+      // ---------- glyph tiles ----------
+      document.querySelectorAll('.glyph').forEach((el) => {
+        el.addEventListener('click', async () => {
+          const ch = el.getAttribute('data-char');
+          if (!ch) return;
+          const ok = await copyText(ch);
+          if (!ok) return;
+          el.classList.add('just-copied');
+          pushRecent(ch);
+          setTimeout(() => el.classList.remove('just-copied'), 850);
+        });
+      });
+
+      // ---------- copy buttons (guides) ----------
+      document.querySelectorAll('.copy-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const ch = btn.getAttribute('data-char');
+          if (!ch) return;
+          const ok = await copyText(ch);
+          if (!ok) return;
+          const original = btn.textContent;
+          btn.textContent = 'Copied ✓';
+          btn.classList.add('done');
+          pushRecent(ch);
+          setTimeout(() => { btn.textContent = original; btn.classList.remove('done'); }, 1100);
+        });
+      });
+
+      // ---------- search + category filter ----------
+      const searchInput = document.querySelector('[data-search]');
+      const grid = document.querySelector('[data-grid]');
+      const emptyMsg = document.querySelector('[data-empty]');
+      let activeCat = 'All';
+
+      function applyFilter() {
+        if (!grid) return;
+        const q = ((searchInput && searchInput.value) || '').trim().toLowerCase();
+        let shown = 0;
+        grid.querySelectorAll('.glyph').forEach((el) => {
+          const hay = (el.getAttribute('data-search-text') || '').toLowerCase();
+          const cat = el.getAttribute('data-cat') || '';
+          const visible = (activeCat === 'All' || cat === activeCat) && (!q || hay.includes(q));
+          el.style.display = visible ? '' : 'none';
+          if (visible) shown++;
+        });
+        if (emptyMsg) emptyMsg.style.display = shown === 0 ? '' : 'none';
+      }
+      if (searchInput) searchInput.addEventListener('input', applyFilter);
+
+      document.querySelectorAll('[data-cat-pill]').forEach((pill) => {
+        pill.addEventListener('click', () => {
+          activeCat = pill.getAttribute('data-cat-pill') || 'All';
+          document.querySelectorAll('[data-cat-pill]').forEach((p) => p.classList.remove('is-active'));
+          pill.classList.add('is-active');
+          applyFilter();
+        });
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      const startCat = params.get('cat');
+      if (startCat) {
+        const target = document.querySelector('[data-cat-pill="' + CSS.escape(startCat) + '"]');
+        if (target) target.click();
+      }
+
+      // ---------- "/" focuses search ----------
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && searchInput && document.activeElement !== searchInput) {
+          e.preventDefault();
+          searchInput.focus();
+        }
+      });
+
+      // ---------- animated hero feature glyph ----------
+      const feature = document.querySelector('[data-feature]');
+      if (feature) {
+        const fch = feature.querySelector('.fch');
+        const set = ['→', '∞', '★', '©', '€', 'π', '✓', '♥', '°', 'Ω', '—', 'é'];
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let i = 0;
+        function show(ch) {
+          fch.textContent = ch;
+          feature.style.setProperty('--cp', JSON.stringify('U+' + ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')));
+          feature.setAttribute('data-cp', 'U+' + ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0'));
+        }
+        show(set[0]);
+        feature.addEventListener('click', async () => { await copyText(fch.textContent); pushRecent(fch.textContent); });
+        if (!reduce) {
+          setInterval(() => { i = (i + 1) % set.length; show(set[i]); }, 2600);
+        }
+      }
+
+      renderRecent();
+    </script>
+  </body>
+</html>

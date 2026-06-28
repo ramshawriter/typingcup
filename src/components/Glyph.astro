@@ -1,0 +1,19 @@
+---
+const { sym } = Astro.props;
+const searchText = `${sym.char} ${sym.name} ${sym.keywords} ${sym.codepoint} ${sym.altCode || ''}`;
+---
+
+<button
+  class="glyph"
+  type="button"
+  data-char={sym.char}
+  data-cat={sym.category}
+  data-search-text={searchText}
+  title={`Copy ${sym.name}`}
+  aria-label={`Copy ${sym.name}`}
+>
+  <span class="name-pop">{sym.name}</span>
+  <span class="ch">{sym.char}</span>
+  <span class="cp">{sym.codepoint}</span>
+  <span class="copied">Copied ✓</span>
+</button>

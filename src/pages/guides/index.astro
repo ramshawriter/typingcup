@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const guides = (await getCollection('guides')).sort(
+  (a, b) => (a.data.order ?? 99) - (b.data.order ?? 99)
+);
+---
+
+<Base
+  title="How-to guides"
+  description="Step-by-step guides for typing special characters, symbols, and accents on Windows, Mac, iPhone, Android, and more."
+>
+  <section class="wrap" style="padding-top: 56px;">
+    <p class="eyebrow">Guides</p>
+    <h1 style="font-size: clamp(30px, 5vw, 46px); margin-top: 12px;">
+      How to type any symbol
+    </h1>
+    <p class="lead" style="max-width: 560px; margin-top: 16px;">
+      Clear, device-by-device instructions — Windows, Mac, iPhone, Android, Word and Google Docs.
+    </p>
+
+    <div class="guide-list" style="margin-top: 36px;">
+      {guides.map((g) => (
+        <a class="guide-card" href={`/guides/${g.id}/`}>
+          <span class="gch">{g.data.symbol}</span>
+          <span>
+            <span class="gtitle">{g.data.title}</span>
+            <span class="gsub">{g.data.shortName} · {g.data.codepoint}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

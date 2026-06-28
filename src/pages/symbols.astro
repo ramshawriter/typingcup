@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import Glyph from '../components/Glyph.astro';
+import { SYMBOLS, CATEGORIES } from '../data/symbols.js';
+
+const counts = Object.fromEntries(
+  CATEGORIES.map((c) => [c, SYMBOLS.filter((s) => s.category === c).length])
+);
+---
+
+<Base
+  title="All symbols"
+  description="Searchable character map. Copy arrows, currency, math symbols, accents, Greek letters, and more — one tap each."
+>
+  <section class="wrap" style="padding-top: 52px;">
+    <p class="eyebrow">Character map</p>
+    <h1 style="font-size: clamp(30px, 4.6vw, 44px); margin-top: 14px;">
+      All {SYMBOLS.length} symbols
+    </h1>
+
+    <div style="max-width: 560px; margin-top: 24px;">
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color: var(--muted-2); flex: none;">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+          <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <input type="search" placeholder="Search name, keyword, or code…" data-search autocomplete="off" aria-label="Search symbols" />
+        <span class="kbd-hint">/</span>
+      </label>
+    </div>
+
+    <div class="cat-bar" style="margin-top: 18px;">
+      <button class="pill is-active" type="button" data-cat-pill="All">All</button>
+      {CATEGORIES.map((cat) => (
+        <button class="pill" type="button" data-cat-pill={cat}>
+          {cat}<span class="count">{counts[cat]}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="recent" data-recent>
+      <div class="label">Recently copied</div>
+      <div class="row" data-recent-row></div>
+    </div>
+
+    <div class="glyph-grid" data-grid style="margin-top: 22px;">
+      {SYMBOLS.map((sym) => <Glyph sym={sym} />)}
+    </div>
+    <p class="empty" data-empty style="display:none;">
+      No symbols match that search. Try a simpler word.
+    </p>
+  </section>
+</Base>
